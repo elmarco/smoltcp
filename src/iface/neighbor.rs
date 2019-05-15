@@ -21,7 +21,7 @@ pub struct Neighbor {
 
 /// An answer to a neighbor cache lookup.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum Answer {
+pub enum Answer {
     /// The neighbor address is in the cache and not expired.
     Found(EthernetAddress),
     /// The neighbor address is not in the cache, or has expired.
@@ -175,7 +175,7 @@ impl<'a> Cache<'a> {
         None
     }
 
-    pub(crate) fn lookup(&mut self, protocol_addr: &IpAddress, timestamp: Instant) -> Answer {
+    pub fn lookup(&mut self, protocol_addr: &IpAddress, timestamp: Instant) -> Answer {
         match self.lookup_pure(protocol_addr, timestamp) {
             Some(hardware_addr) =>
                 Answer::Found(hardware_addr),

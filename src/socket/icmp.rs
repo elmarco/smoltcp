@@ -247,8 +247,8 @@ impl<'a, 'b> IcmpSocket<'a, 'b> {
 
     /// Filter determining which packets received by the interface are appended to
     /// the given sockets received buffer.
-    pub(crate) fn accepts(&self, ip_repr: &IpRepr, icmp_repr: &IcmpRepr,
-                          cksum: &ChecksumCapabilities) -> bool {
+    pub fn accepts(&self, ip_repr: &IpRepr, icmp_repr: &IcmpRepr,
+                   cksum: &ChecksumCapabilities) -> bool {
         match (&self.endpoint, icmp_repr) {
             // If we are bound to ICMP errors associated to a UDP port, only
             // accept Destination Unreachable messages with the data containing
@@ -290,8 +290,8 @@ impl<'a, 'b> IcmpSocket<'a, 'b> {
         }
     }
 
-    pub(crate) fn process(&mut self, ip_repr: &IpRepr, icmp_repr: &IcmpRepr,
-                          _cksum: &ChecksumCapabilities) -> Result<()> {
+    pub fn process(&mut self, ip_repr: &IpRepr, icmp_repr: &IcmpRepr,
+                   _cksum: &ChecksumCapabilities) -> Result<()> {
         match icmp_repr {
             #[cfg(feature = "proto-ipv4")]
             &IcmpRepr::Ipv4(ref icmp_repr) => {
@@ -318,7 +318,7 @@ impl<'a, 'b> IcmpSocket<'a, 'b> {
         Ok(())
     }
 
-    pub(crate) fn dispatch<F>(&mut self, _caps: &DeviceCapabilities, emit: F) -> Result<()>
+    pub fn dispatch<F>(&mut self, _caps: &DeviceCapabilities, emit: F) -> Result<()>
         where F: FnOnce((IpRepr, IcmpRepr)) -> Result<()>
     {
         let handle    = self.meta.handle;

@@ -796,7 +796,7 @@ impl<'a> TcpSocket<'a> {
         self.state = state
     }
 
-    pub(crate) fn reply(ip_repr: &IpRepr, repr: &TcpRepr) -> (IpRepr, TcpRepr<'static>) {
+    pub fn reply(ip_repr: &IpRepr, repr: &TcpRepr) -> (IpRepr, TcpRepr<'static>) {
         let reply_repr = TcpRepr {
             src_port:     repr.dst_port,
             dst_port:     repr.src_port,
@@ -820,7 +820,7 @@ impl<'a> TcpSocket<'a> {
         (ip_reply_repr, reply_repr)
     }
 
-    pub(crate) fn rst_reply(ip_repr: &IpRepr, repr: &TcpRepr) -> (IpRepr, TcpRepr<'static>) {
+    pub fn rst_reply(ip_repr: &IpRepr, repr: &TcpRepr) -> (IpRepr, TcpRepr<'static>) {
         debug_assert!(repr.control != TcpControl::Rst);
 
         let (ip_reply_repr, mut reply_repr) = Self::reply(ip_repr, repr);
@@ -891,7 +891,7 @@ impl<'a> TcpSocket<'a> {
         (ip_reply_repr, reply_repr)
     }
 
-    pub(crate) fn accepts(&self, ip_repr: &IpRepr, repr: &TcpRepr) -> bool {
+    pub fn accepts(&self, ip_repr: &IpRepr, repr: &TcpRepr) -> bool {
         if self.state == State::Closed { return false }
 
         // If we're still listening for SYNs and the packet has an ACK, it cannot
@@ -913,8 +913,8 @@ impl<'a> TcpSocket<'a> {
         true
     }
 
-    pub(crate) fn process(&mut self, timestamp: Instant, ip_repr: &IpRepr, repr: &TcpRepr) ->
-                         Result<Option<(IpRepr, TcpRepr<'static>)>> {
+    pub fn process(&mut self, timestamp: Instant, ip_repr: &IpRepr, repr: &TcpRepr) ->
+        Result<Option<(IpRepr, TcpRepr<'static>)>> {
         debug_assert!(self.accepts(ip_repr, repr));
 
         // Consider how much the sequence number space differs from the transmit buffer space.
@@ -1380,8 +1380,8 @@ impl<'a> TcpSocket<'a> {
             self.remote_last_win
     }
 
-    pub(crate) fn dispatch<F>(&mut self, timestamp: Instant, caps: &DeviceCapabilities,
-                              emit: F) -> Result<()>
+    pub fn dispatch<F>(&mut self, timestamp: Instant, caps: &DeviceCapabilities,
+                       emit: F) -> Result<()>
             where F: FnOnce((IpRepr, TcpRepr)) -> Result<()> {
         if !self.remote_endpoint.is_specified() { return Err(Error::Exhausted) }
 
@@ -1612,7 +1612,7 @@ impl<'a> TcpSocket<'a> {
         Ok(())
     }
 
-    pub(crate) fn poll_at(&self) -> PollAt {
+    pub fn poll_at(&self) -> PollAt {
         // The logic here mirrors the beginning of dispatch() closely.
         if !self.remote_endpoint.is_specified() {
             // No one to talk to, nothing to transmit.
